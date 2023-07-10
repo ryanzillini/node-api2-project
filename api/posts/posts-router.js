@@ -35,24 +35,47 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// router.post("/", async (req, res) => {
-//   const post = req.body;
-//   if (!post.tile || !post.contents) {
-//     res
-//       .status(400)
-//       .json({ message: "Please provide title and contents for the post" });
+// router.post("/", (req, res) => {
+//   const { title, contents } = req.body;
+//   if (!title || !contents) {
+//     res.status(400).json({
+//       message: "Please provide title and contents for the post",
+//     });
 //   } else {
-//     try {
-//       const newPost = await Post.insert(post);
-//       res.status(201).json(newPost);
-//     } catch (err) {
-//       res
-//         .status(500)
-//         .json({
+//     Post.insert({ title, contents })
+//       .then(({ id }) => {
+//         return Post.findById(id);
+//       })
+//       .then((post) => {
+//         res.status(201).json(post);
+//       })
+//       .catch((err) => {
+//         res.status(500).json({
 //           message: "There was an error while saving the post to the database",
 //         });
-//     }
+//       });
 //   }
 // });
+router.post("/", async (req, res) => {
+  const { title, contents } = req.body;
+  if (!title || !contents) {
+    res
+      .status(400)
+      .json({ message: "Please provide title and contents for the post" });
+  } else {
+    try {
+      const newpost = await Post.insert({ title, contents }).then(({ id }) => {
+        return Post.findById(id);
+      });
+      res.status(201).json(newpost);
+    } catch {
+      res
+        .status(500)
+        .json({ message: "The post informaton could not be modified" });
+    }
+  }
+});
+
+// router.put('/:id', as)
 
 module.exports = router;
