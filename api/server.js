@@ -10,8 +10,8 @@ server.use(express.json());
 server.use("/api/posts", postsRouter);
 
 server.use("*", (req, res) => {
-  res.status(200).json({
-    message: "Hello from server",
+  res.status(404).json({
+    message: "Not found",
   });
 });
 
